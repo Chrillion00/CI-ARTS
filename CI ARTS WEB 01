@@ -1,0 +1,1735 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>CI ARTS | Film Director</title>
+    <meta name="description" content="CI ARTS — Visual storytelling and premium film production.">
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <!-- Cormorant for ultra-luxury headings, Inter for razor-sharp tech UI -->
+    <link
+        href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:ital,wght@0,300;0,400;0,500;0,600;1,400&family=Inter:wght@300;400;500&display=swap"
+        rel="stylesheet">
+    <link rel="stylesheet" href="https://cdn.plyr.io/3.7.8/plyr.css" />
+    <style>
+        /* ===== DESIGN TOKENS: LUXURY CINEMATIC ===== */
+        :root {
+            --bg: #050505;
+            /* Deep Obsidian Black */
+            --bg-glass: rgba(5, 5, 5, 0.7);
+            --text: #FFFFFF;
+            --text-dim: #888888;
+            --text-muted: #444444;
+            --ease: cubic-bezier(0.25, 1, 0.5, 1);
+            --ease-heavy: cubic-bezier(0.7, 0, 0.3, 1);
+        }
+
+        /* ===== RESET & BASE ===== */
+        *,
+        *::before,
+        *::after {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        html {
+            scroll-behavior: smooth;
+        }
+
+        body {
+            font-family: 'Inter', sans-serif;
+            background: var(--bg);
+            color: var(--text);
+            overflow-x: hidden;
+            -webkit-font-smoothing: antialiased;
+            -moz-osx-font-smoothing: grayscale;
+        }
+
+        a,
+        button {
+            text-decoration: none;
+            color: inherit;
+            border: none;
+            background: none;
+            cursor: pointer;
+        }
+
+        img {
+            display: block;
+            width: 100%;
+            height: 100%;
+            object-fit: cover;
+        }
+
+        /* ===== TYPOGRAPHY ===== */
+        h1,
+        h2,
+        h3,
+        .t-display {
+            font-family: 'Cormorant Garamond', Georgia, serif;
+            font-weight: 300;
+        }
+
+        .t-sub {
+            font-family: 'Inter', sans-serif;
+            font-size: 0.75rem;
+            text-transform: uppercase;
+            letter-spacing: 0.2em;
+            font-weight: 400;
+            color: var(--text-dim);
+        }
+
+        /* ===== NAV ===== */
+        nav {
+            position: fixed;
+            top: 0;
+            width: 100%;
+            padding: 2rem 4%;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            z-index: 100;
+            background: linear-gradient(to bottom, rgba(5, 5, 5, 0.8) 0%, transparent 100%);
+            mix-blend-mode: difference;
+            /* Extremely high-end fashion effect */
+        }
+
+        .logo {
+            font-family: 'Cormorant Garamond', serif;
+            font-size: 1.8rem;
+            font-weight: 500;
+            letter-spacing: 0.1em;
+            text-transform: uppercase;
+        }
+
+        .nav-links {
+            display: flex;
+            gap: 4rem;
+            list-style: none;
+        }
+
+        .nav-links a {
+            font-size: 0.75rem;
+            text-transform: uppercase;
+            letter-spacing: 0.2em;
+            color: var(--text);
+            transition: opacity 0.4s;
+        }
+
+        .nav-links a:hover {
+            opacity: 0.5;
+        }
+
+        /* ===== HERO ===== */
+        @keyframes slowPan {
+            0% {
+                transform: scale(1.0);
+            }
+
+            100% {
+                transform: scale(1.15);
+            }
+        }
+
+        @keyframes fadeIn {
+            from {
+                opacity: 0;
+                transform: translateY(10px);
+            }
+
+            to {
+                opacity: 1;
+                transform: translateY(0);
+            }
+        }
+
+        .film-grain {
+            position: absolute;
+            inset: 0;
+            z-index: 10;
+            pointer-events: none;
+            background-image: url("data:image/svg+xml,%3Csvg viewBox='0 0 200 200' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='noiseFilter'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.65' numOctaves='3' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23noiseFilter)'/%3E%3C/svg%3E");
+            opacity: 0.08;
+            mix-blend-mode: overlay;
+        }
+
+        .hero {
+            position: relative;
+            height: 100vh;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            overflow: hidden;
+        }
+
+        .hero-video {
+            position: absolute;
+            inset: 0;
+            z-index: 0;
+            overflow: hidden;
+            background: #000;
+        }
+
+        .hero-fallback {
+            position: absolute;
+            inset: 0;
+            width: 100vw;
+            height: 100vh;
+            object-fit: cover;
+            opacity: 0.35;
+            z-index: 1;
+            transition: opacity 3s cubic-bezier(0.25, 1, 0.5, 1);
+            pointer-events: none;
+        }
+
+        .hero-fallback.hidden {
+            opacity: 0;
+        }
+
+        #heroVideoPlayer {
+            position: absolute;
+            top: 50%;
+            left: 50%;
+            width: 100vw;
+            height: 56.25vw;
+            min-height: 100vh;
+            min-width: 177.77vh;
+            transform: translate(-50%, -50%) scale(1.1);
+            pointer-events: none;
+            border: none;
+            opacity: 0;
+            filter: blur(30px);
+            transition: opacity 4s cubic-bezier(0.25, 1, 0.5, 1), filter 4s cubic-bezier(0.25, 1, 0.5, 1), transform 4s cubic-bezier(0.25, 1, 0.5, 1);
+        }
+
+        #heroVideoPlayer.is-playing {
+            opacity: 0.35;
+            filter: blur(0);
+            transform: translate(-50%, -50%) scale(1);
+        }
+
+        .hero-video::after {
+            content: '';
+            position: absolute;
+            inset: 0;
+            background: linear-gradient(to top, var(--bg) 0%, rgba(5, 5, 5, 0) 50%, rgba(5, 5, 5, 0.4) 100%);
+        }
+
+        .hero-content {
+            position: relative;
+            z-index: 1;
+            text-align: center;
+        }
+
+        .hero-title {
+            font-size: clamp(4rem, 12vw, 10rem);
+            margin-bottom: 1rem;
+            line-height: 1;
+        }
+
+        /* ===== WORK GALLERY ===== */
+        .work-section {
+            padding: 8rem 4%;
+            max-width: 2000px;
+            margin: 0 auto;
+        }
+
+        .work-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: flex-end;
+            margin-bottom: 6rem;
+            border-bottom: 1px solid var(--text-muted);
+            padding-bottom: 2rem;
+        }
+
+        .work-header h2 {
+            font-size: clamp(3rem, 6vw, 5rem);
+        }
+
+        .work-filter {
+            display: flex;
+            gap: 3rem;
+        }
+
+        .work-filter button {
+            font-family: 'Inter', sans-serif;
+            font-size: 0.8rem;
+            text-transform: uppercase;
+            letter-spacing: 0.1em;
+            color: var(--text-dim);
+            transition: color 0.4s;
+            position: relative;
+        }
+
+        .work-filter button:hover {
+            color: var(--text);
+        }
+
+        .work-filter button.active {
+            color: var(--text);
+        }
+
+        .work-filter button.active::after {
+            content: '';
+            position: absolute;
+            bottom: -5px;
+            left: 0;
+            width: 100%;
+            height: 1px;
+            background: var(--text);
+        }
+
+        .work-grid {
+            display: grid;
+            grid-template-columns: repeat(2, 1fr);
+            gap: 6rem 4rem;
+        }
+
+        .work-tile {
+            display: flex;
+            flex-direction: column;
+            gap: 1.5rem;
+            text-decoration: none;
+            position: relative;
+        }
+
+        .work-tile.full-width {
+            grid-column: span 2;
+        }
+
+        .tile-media {
+            width: 100%;
+            aspect-ratio: 21/9;
+            position: relative;
+            overflow: hidden;
+            background: var(--text-muted);
+        }
+
+        .tile-media::after {
+            content: '';
+            position: absolute;
+            inset: 0;
+            background: radial-gradient(circle at center, transparent 30%, rgba(0, 0, 0, 0.8) 120%);
+            opacity: 0.8;
+            transition: opacity 1.5s ease;
+            pointer-events: none;
+        }
+
+        .work-tile:hover .tile-media::after {
+            opacity: 0.2;
+        }
+
+        .tile-media img {
+            transition: transform 2.5s cubic-bezier(0.25, 1, 0.5, 1), filter 1.5s ease;
+            filter: brightness(0.5) contrast(1.2) saturate(0.3);
+        }
+
+        .work-tile:hover .tile-media img {
+            transform: scale(1.08);
+            filter: brightness(1.05) contrast(1.1) saturate(1.1);
+        }
+
+        .tile-play {
+            position: absolute;
+            top: 50%;
+            left: 50%;
+            transform: translate(-50%, -50%) scale(0.8);
+            width: 80px;
+            height: 80px;
+            border: 1px solid rgba(255, 255, 255, 0.4);
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            backdrop-filter: blur(8px);
+            background: rgba(0, 0, 0, 0.2);
+            opacity: 0;
+            transition: all 0.8s cubic-bezier(0.25, 1, 0.5, 1);
+        }
+
+        .tile-play svg {
+            width: 16px;
+            height: 16px;
+            fill: var(--text);
+            margin-left: 4px;
+            transition: transform 0.5s ease;
+        }
+
+        .work-tile:hover .tile-play {
+            opacity: 1;
+            transform: translate(-50%, -50%) scale(1);
+            box-shadow: 0 0 40px rgba(255, 255, 255, 0.1);
+        }
+
+        .work-tile:hover .tile-play:hover svg {
+            transform: scale(1.15);
+        }
+
+        .tile-info {
+            display: flex;
+            flex-direction: column;
+            gap: 0.5rem;
+        }
+
+        .tile-info h3 {
+            font-size: 2rem;
+            color: var(--text);
+        }
+
+        /* ===== EXPERIENCE ===== */
+        .manifesto {
+            padding: 8rem 4%;
+            max-width: 1200px;
+            margin: 0 auto;
+            text-align: center;
+        }
+
+        .manifesto h2 {
+            font-size: clamp(3rem, 6vw, 5rem);
+            margin-bottom: 2rem;
+        }
+
+        .manifesto p {
+            font-family: 'Inter', sans-serif;
+            font-size: 1.2rem;
+            font-weight: 300;
+            line-height: 1.8;
+            color: var(--text-dim);
+        }
+
+        .experience-section {
+            padding: 4rem 4% 8rem;
+            max-width: 1400px;
+            margin: 0 auto;
+        }
+
+        /* ===== CREDITS TICKER ===== */
+        .credits-section {
+            padding: 2rem 0 8rem;
+            overflow: hidden;
+            background: transparent;
+            width: 100%;
+            border-top: 1px solid rgba(255, 255, 255, 0.05);
+            border-bottom: 1px solid rgba(255, 255, 255, 0.05);
+        }
+
+        .credits-track {
+            display: flex;
+            width: max-content;
+            animation: ticker 60s linear infinite;
+        }
+
+        .credits-track:hover {
+            animation-play-state: paused;
+        }
+
+        .credits-content {
+            display: flex;
+            flex-shrink: 0;
+            gap: 4rem;
+            padding-right: 4rem;
+            white-space: nowrap;
+            align-items: center;
+        }
+
+        .credit-item {
+            display: flex;
+            align-items: center;
+            gap: 1.5rem;
+            transition: opacity 0.4s;
+        }
+
+        .credit-item:hover {
+            opacity: 1;
+        }
+
+        .credits-track:hover .credit-item:not(:hover) {
+            opacity: 0.3;
+        }
+
+        .credit-title {
+            font-family: 'Cormorant Garamond', serif;
+            font-size: clamp(2rem, 4vw, 3rem);
+            font-weight: 400;
+            color: var(--text);
+            font-style: italic;
+        }
+
+        .credit-role {
+            font-family: 'Inter', sans-serif;
+            font-size: 0.75rem;
+            text-transform: uppercase;
+            letter-spacing: 0.1em;
+            color: var(--text-dim);
+        }
+
+        .credit-sep {
+            font-family: 'Inter', sans-serif;
+            font-size: 1rem;
+            color: rgba(255, 255, 255, 0.15);
+        }
+
+        .imdb-btn-wrap {
+            text-align: center;
+            margin-top: 4rem;
+        }
+
+        .imdb-btn {
+            display: inline-block;
+            font-family: 'Inter', sans-serif;
+            font-size: 0.8rem;
+            text-transform: uppercase;
+            letter-spacing: 0.2em;
+            color: var(--text);
+            border: 1px solid rgba(255, 255, 255, 0.2);
+            padding: 1rem 3rem;
+            border-radius: 50px;
+            transition: all 0.4s var(--ease);
+            text-decoration: none;
+        }
+
+        .imdb-btn:hover {
+            background: #fff;
+            color: #000;
+            border-color: #fff;
+        }
+
+        /* ===== CONTACT ===== */
+        .contact-section {
+            padding: 12rem 4%;
+            text-align: center;
+        }
+
+        .contact-sub {
+            margin-bottom: 2rem;
+            display: block;
+        }
+
+        .contact-email {
+            font-family: 'Cormorant Garamond', serif;
+            font-size: clamp(3rem, 8vw, 8rem);
+            color: var(--text);
+            position: relative;
+            display: inline-flex;
+            align-items: center;
+            gap: 1rem;
+            cursor: pointer;
+            transition: opacity 0.4s var(--ease);
+        }
+
+        .contact-email:hover {
+            opacity: 0.9;
+        }
+
+        .contact-email::after {
+            content: '';
+            position: absolute;
+            bottom: 0;
+            left: 0;
+            width: 100%;
+            height: 2px;
+            background: var(--text);
+            transform: scaleX(0);
+            transform-origin: right;
+            transition: transform 0.8s var(--ease-heavy);
+        }
+
+        .contact-email:hover::after {
+            transform: scaleX(1);
+            transform-origin: left;
+        }
+
+        .contact-arrow {
+            font-family: 'Inter', sans-serif;
+            font-size: clamp(1.5rem, 3vw, 4rem);
+            font-weight: 300;
+            opacity: 0;
+            transform: translateX(-20px) translateY(10px);
+            transition: all 0.6s var(--ease-heavy);
+        }
+
+        .contact-email:hover .contact-arrow {
+            opacity: 1;
+            transform: translateX(0) translateY(0);
+        }
+
+        #emailText {
+            transition: opacity 0.4s var(--ease);
+        }
+
+        /* ===== FOOTER ===== */
+        footer {
+            padding: 4rem 4%;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            border-top: 1px solid rgba(255, 255, 255, 0.05);
+        }
+
+        .footer-social {
+            display: flex;
+            gap: 3rem;
+        }
+
+        .footer-social a {
+            font-family: 'Inter', sans-serif;
+            font-size: 0.75rem;
+            text-transform: uppercase;
+            letter-spacing: 0.1em;
+            color: var(--text-dim);
+            transition: color 0.4s;
+        }
+
+        .footer-social a:hover {
+            color: var(--text);
+        }
+
+        /* ===== TICKER ===== */
+        .ticker-section {
+            border-top: 1px solid rgba(255, 255, 255, 0.05);
+            border-bottom: 1px solid rgba(255, 255, 255, 0.05);
+            padding: 2.5rem 0;
+            overflow: hidden;
+            background: transparent;
+            width: 100%;
+        }
+
+        .ticker-wrap {
+            overflow: hidden;
+            display: flex;
+            width: 100%;
+        }
+
+        .ticker-track {
+            display: flex;
+            width: max-content;
+            animation: ticker 40s linear infinite;
+        }
+
+        .ticker-content {
+            display: flex;
+            flex-shrink: 0;
+            gap: 4rem;
+            padding-right: 4rem;
+            white-space: nowrap;
+            align-items: center;
+        }
+
+        .ticker-item {
+            font-family: 'Inter', sans-serif;
+            font-size: 0.85rem;
+            text-transform: uppercase;
+            letter-spacing: 0.15em;
+            color: var(--text-dim);
+            opacity: 0.6;
+        }
+
+        @keyframes ticker {
+            0% {
+                transform: translateX(0);
+            }
+
+            100% {
+                transform: translateX(-50%);
+            }
+        }
+
+        /* ===== VIDEO MODAL (LUXURY) ===== */
+        .modal-overlay {
+            position: fixed;
+            inset: 0;
+            background: rgba(0, 0, 0, 0.96);
+            z-index: 9000;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            opacity: 0;
+            pointer-events: none;
+            transition: opacity 0.6s var(--ease-heavy);
+            backdrop-filter: blur(10px);
+        }
+
+        .modal-overlay.active {
+            opacity: 1;
+            pointer-events: auto;
+        }
+
+        .modal-close {
+            position: absolute;
+            top: 2rem;
+            right: 3rem;
+            font-family: 'Inter', sans-serif;
+            font-size: 0.8rem;
+            letter-spacing: 0.2em;
+            text-transform: uppercase;
+            color: var(--text);
+            background: transparent;
+            border: none;
+            cursor: pointer;
+            padding: 1rem;
+            z-index: 9001;
+        }
+
+        .modal-content {
+            width: 92vw;
+            max-width: 1600px;
+            aspect-ratio: 16/9;
+            background: #000;
+            transform: scale(0.95);
+            transition: transform 0.8s var(--ease-heavy);
+            position: relative;
+        }
+
+        .modal-overlay.active .modal-content {
+            transform: scale(1);
+        }
+
+        .modal-content iframe,
+        #plyrContainer {
+            width: 100%;
+            height: 100%;
+            border: none;
+        }
+
+        /* Plyr customizations */
+        :root {
+            --plyr-color-main: #ffffff;
+            --plyr-video-background: #000000;
+        }
+
+        .plyr--video .plyr__controls {
+            background: linear-gradient(rgba(0, 0, 0, 0), rgba(0, 0, 0, 0.7));
+            padding: 20px;
+        }
+
+        .modal-overlay {
+            position: fixed;
+            inset: 0;
+            background: rgba(0, 0, 0, 0.96);
+            z-index: 9000;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            opacity: 0;
+            visibility: hidden;
+            transition: all 0.6s var(--ease-heavy);
+        }
+
+        .modal-overlay.active {
+            opacity: 1;
+            visibility: visible;
+        }
+
+        .modal-content {
+            width: 92vw;
+            max-width: 1600px;
+            aspect-ratio: 21/9;
+            background: #000;
+            transform: scale(0.95);
+            transition: transform 0.8s var(--ease-heavy);
+            position: relative;
+        }
+
+        .modal-overlay.active .modal-content {
+            transform: scale(1);
+        }
+
+        .modal-content iframe {
+            width: 100%;
+            height: 100%;
+            border: none;
+        }
+
+        .modal-close {
+            position: fixed;
+            top: 2.5rem;
+            right: 4%;
+            background: none;
+            color: var(--text-dim);
+            font-family: 'Inter', sans-serif;
+            font-size: 0.8rem;
+            font-weight: 400;
+            text-transform: uppercase;
+            letter-spacing: 0.2em;
+            cursor: pointer;
+            z-index: 9001;
+            transition: color 0.3s;
+        }
+
+        .modal-close:hover {
+            color: var(--text);
+        }
+
+        /* ===== MOBILE MENU ===== */
+        .menu-toggle {
+            display: none;
+            width: 30px;
+            height: 14px;
+            position: relative;
+            z-index: 200;
+        }
+
+        .menu-toggle span {
+            display: block;
+            width: 100%;
+            height: 1px;
+            background: var(--text);
+            position: absolute;
+            left: 0;
+            transition: all 0.4s var(--ease);
+        }
+
+        .menu-toggle span:nth-child(1) {
+            top: 0;
+        }
+
+        .menu-toggle span:nth-child(2) {
+            bottom: 0;
+        }
+
+        .menu-toggle.active span:nth-child(1) {
+            top: 50%;
+            transform: rotate(45deg);
+        }
+
+        .menu-toggle.active span:nth-child(2) {
+            top: 50%;
+            transform: rotate(-45deg);
+        }
+
+        .mobile-menu {
+            position: fixed;
+            inset: 0;
+            background: rgba(5, 5, 5, 0.85);
+            backdrop-filter: blur(25px);
+            z-index: 150;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            gap: 3rem;
+            opacity: 0;
+            visibility: hidden;
+            transition: all 0.6s var(--ease-heavy);
+        }
+
+        .mobile-menu.active {
+            opacity: 1;
+            visibility: visible;
+        }
+
+        .mobile-link {
+            font-family: 'Cormorant Garamond', serif;
+            font-size: 3rem;
+            color: var(--text);
+            opacity: 0;
+            transform: translateY(30px);
+            transition: all 0.6s var(--ease-heavy);
+        }
+
+        .mobile-menu.active .mobile-link {
+            opacity: 1;
+            transform: translateY(0);
+        }
+
+        .mobile-menu.active .mobile-link:nth-child(1) {
+            transition-delay: 0.1s;
+        }
+
+        .mobile-menu.active .mobile-link:nth-child(2) {
+            transition-delay: 0.2s;
+        }
+
+        .mobile-menu.active .mobile-link:nth-child(3) {
+            transition-delay: 0.3s;
+        }
+
+        /* ===== REVEAL ===== */
+        .reveal {
+            opacity: 0;
+            transform: translateY(40px);
+            transition: opacity 1.2s var(--ease-heavy), transform 1.2s var(--ease-heavy);
+        }
+
+        .reveal.visible {
+            opacity: 1;
+            transform: translateY(0);
+        }
+
+        /* ===== RESPONSIVE ===== */
+        @media (max-width: 1024px) {
+            .work-grid {
+                gap: 4rem 2rem;
+            }
+        }
+
+        @media (max-width: 768px) {
+            nav {
+                mix-blend-mode: normal;
+            }
+
+            .nav-links {
+                display: none;
+            }
+
+            .menu-toggle {
+                display: block;
+            }
+
+            .work-header {
+                flex-direction: column;
+                align-items: flex-start;
+                gap: 2rem;
+            }
+
+            .work-grid {
+                grid-template-columns: 1fr;
+                gap: 4rem;
+            }
+
+            .work-tile.full-width {
+                grid-column: span 1;
+            }
+
+            .experience-item {
+                flex-direction: column;
+                align-items: flex-start;
+                gap: 0.5rem;
+            }
+
+            footer {
+                flex-direction: column;
+                gap: 2rem;
+                text-align: center;
+            }
+        }
+
+        /* ===== CUSTOM CURSOR ===== */
+        .custom-cursor {
+            position: fixed;
+            top: 0;
+            left: 0;
+            pointer-events: none;
+            z-index: 9999;
+            width: 10px;
+            height: 10px;
+            background: var(--text);
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            transition: width 0.4s var(--ease-heavy), height 0.4s var(--ease-heavy), background 0.4s, border 0.4s;
+            mix-blend-mode: difference;
+        }
+
+        .custom-cursor .cursor-text {
+            font-family: 'Inter', sans-serif;
+            font-size: 0.7rem;
+            font-weight: 600;
+            letter-spacing: 0.2em;
+            opacity: 0;
+            transition: opacity 0.3s;
+            color: var(--text);
+        }
+
+        .custom-cursor.play-mode {
+            width: 80px;
+            height: 80px;
+            background: rgba(255, 255, 255, 0.1);
+            backdrop-filter: blur(8px);
+            border: 1px solid rgba(255, 255, 255, 0.4);
+            mix-blend-mode: normal;
+        }
+
+        .custom-cursor.play-mode .cursor-text {
+            opacity: 1;
+        }
+
+        @media (hover: hover) and (pointer: fine) {
+
+            body,
+            a,
+            button,
+            .work-tile,
+            .contact-email {
+                cursor: none !important;
+            }
+        }
+    </style>
+</head>
+
+<body>
+
+    <!-- CUSTOM CURSOR -->
+    <div class="custom-cursor" id="customCursor">
+        <span class="cursor-text">PLAY</span>
+    </div>
+
+    <!-- NAV -->
+    <nav>
+        <a href="#" class="logo">CI ARTS</a>
+        <ul class="nav-links">
+            <li><a href="#work">Work</a></li>
+            <li><a href="#about">Work on Set</a></li>
+            <li><a href="#contact">Contact</a></li>
+        </ul>
+        <button class="menu-toggle" id="menuToggle" aria-label="Menu">
+            <span></span><span></span>
+        </button>
+    </nav>
+
+    <!-- MOBILE MENU -->
+    <div class="mobile-menu" id="mobileMenu">
+        <a href="#work" class="mobile-link">Work</a>
+        <a href="#about" class="mobile-link">Work on Set</a>
+        <a href="#contact" class="mobile-link">Contact</a>
+    </div>
+
+    <!-- HERO -->
+    <section class="hero">
+        <div class="film-grain"></div>
+        <div class="hero-video reveal">
+            <!-- Instant load fallback image -->
+            <img class="hero-fallback" id="heroFallback" src="https://img.youtube.com/vi/wMgp2aNwtII/maxresdefault.jpg"
+                alt="Cinematic Hero" loading="eager">
+            <!-- Full bleed cinematic hero auto-playing video via API -->
+            <div id="heroVideoPlayer"></div>
+        </div>
+        <div class="hero-content reveal">
+            <h1 class="hero-title">CI ARTS</h1>
+            <p class="t-sub">Cinematic Vision</p>
+        </div>
+    </section>
+
+    <!-- TRUSTED BY TICKER -->
+    <section class="ticker-section">
+        <div class="ticker-wrap">
+            <div class="ticker-track">
+                <!-- Group 1 -->
+                <div class="ticker-content">
+                    <span class="ticker-item">Trusted By</span>
+                    <span class="ticker-item">•</span>
+                    <span class="ticker-item">Roschier</span>
+                    <span class="ticker-item">•</span>
+                    <span class="ticker-item">Sweets by Camilla</span>
+                    <span class="ticker-item">•</span>
+                    <span class="ticker-item">TEN Music Group</span>
+                    <span class="ticker-item">•</span>
+                    <span class="ticker-item">Wetzel Productions</span>
+                    <span class="ticker-item">•</span>
+                    <span class="ticker-item">Redken</span>
+                    <span class="ticker-item">•</span>
+                    <span class="ticker-item">Stockholm Noir</span>
+                    <span class="ticker-item">•</span>
+                    <span class="ticker-item">Sernbrandt Maskiner</span>
+                    <span class="ticker-item">•</span>
+                    <span class="ticker-item">Nordic Integration Summit</span>
+                    <span class="ticker-item">•</span>
+                    <span class="ticker-item">Aurora Innovation</span>
+                    <span class="ticker-item">•</span>
+                </div>
+                <!-- Group 2 -->
+                <div class="ticker-content">
+                    <span class="ticker-item">Trusted By</span>
+                    <span class="ticker-item">•</span>
+                    <span class="ticker-item">Roschier</span>
+                    <span class="ticker-item">•</span>
+                    <span class="ticker-item">Sweets by Camilla</span>
+                    <span class="ticker-item">•</span>
+                    <span class="ticker-item">TEN Music Group</span>
+                    <span class="ticker-item">•</span>
+                    <span class="ticker-item">Wetzel Productions</span>
+                    <span class="ticker-item">•</span>
+                    <span class="ticker-item">Redken</span>
+                    <span class="ticker-item">•</span>
+                    <span class="ticker-item">Stockholm Noir</span>
+                    <span class="ticker-item">•</span>
+                    <span class="ticker-item">Sernbrandt Maskiner</span>
+                    <span class="ticker-item">•</span>
+                    <span class="ticker-item">Nordic Integration Summit</span>
+                    <span class="ticker-item">•</span>
+                    <span class="ticker-item">Aurora Innovation</span>
+                    <span class="ticker-item">•</span>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- WORK GALLERY -->
+    <section class="work-section" id="work">
+
+        <div class="work-header reveal">
+            <h2>Selected Works</h2>
+            <div class="work-filter">
+                <button class="filter-btn active" data-filter="all">All</button>
+                <button class="filter-btn" data-filter="brand">Brand</button>
+                <button class="filter-btn" data-filter="creative">Creative</button>
+            </div>
+        </div>
+        <div class="work-grid" id="workGrid">
+            <button class="work-tile reveal" data-category="brand"
+                data-video="https://www.youtube.com/embed/RYVR1FdaisM?autoplay=1">
+                <div class="tile-media">
+                    <img src="https://img.youtube.com/vi/RYVR1FdaisM/hqdefault.jpg" alt="Burgundy" loading="lazy">
+                    <div class="tile-play"><svg viewBox="0 0 24 24">
+                            <polygon points="6,3 20,12 6,21" />
+                        </svg></div>
+                </div>
+                <div class="tile-info">
+                    <span class="t-sub">Redken Nordics</span>
+                    <h3>Burgundy Peekaboo</h3>
+                </div>
+            </button>
+            <button class="work-tile reveal" data-category="brand"
+                data-video="https://www.youtube.com/embed/o3uBwVVSHcc?autoplay=1">
+                <div class="tile-media">
+                    <img src="https://img.youtube.com/vi/o3uBwVVSHcc/hqdefault.jpg" alt="Brunette" loading="lazy">
+                    <div class="tile-play"><svg viewBox="0 0 24 24">
+                            <polygon points="6,3 20,12 6,21" />
+                        </svg></div>
+                </div>
+                <div class="tile-info">
+                    <span class="t-sub">Redken Nordics</span>
+                    <h3>Rich Espresso Brunette</h3>
+                </div>
+            </button>
+            <button class="work-tile reveal" data-category="brand"
+                data-video="https://www.youtube.com/embed/Id5Ru-iKMrE?autoplay=1">
+                <div class="tile-media">
+                    <img src="https://img.youtube.com/vi/Id5Ru-iKMrE/hqdefault.jpg" alt="Golden" loading="lazy">
+                    <div class="tile-play"><svg viewBox="0 0 24 24">
+                            <polygon points="6,3 20,12 6,21" />
+                        </svg></div>
+                </div>
+                <div class="tile-info">
+                    <span class="t-sub">Redken Nordics</span>
+                    <h3>Glossy Golden Spice</h3>
+                </div>
+            </button>
+            <button class="work-tile reveal" data-category="brand"
+                data-video="https://www.youtube.com/embed/bYy1Za-zEGQ?autoplay=1">
+                <div class="tile-media">
+                    <img src="https://img.youtube.com/vi/bYy1Za-zEGQ/hqdefault.jpg" alt="Blonde" loading="lazy">
+                    <div class="tile-play"><svg viewBox="0 0 24 24">
+                            <polygon points="6,3 20,12 6,21" />
+                        </svg></div>
+                </div>
+                <div class="tile-info">
+                    <span class="t-sub">Redken Nordics</span>
+                    <h3>Buttercream Blonde</h3>
+                </div>
+            </button>
+            <button class="work-tile reveal" data-category="brand"
+                data-video="https://www.youtube.com/embed/9WQMMnxursg?autoplay=1">
+                <div class="tile-media">
+                    <img src="https://img.youtube.com/vi/9WQMMnxursg/hqdefault.jpg" alt="Mocha" loading="lazy">
+                    <div class="tile-play"><svg viewBox="0 0 24 24">
+                            <polygon points="6,3 20,12 6,21" />
+                        </svg></div>
+                </div>
+                <div class="tile-info">
+                    <span class="t-sub">Redken Nordics</span>
+                    <h3>Mocha Mousse Bronde</h3>
+                </div>
+            </button>
+            <button class="work-tile reveal" data-category="brand"
+                data-video="https://www.youtube.com/embed/HdIFIuQRB1A?autoplay=1">
+                <div class="tile-media">
+                    <img src="https://img.youtube.com/vi/HdIFIuQRB1A/hqdefault.jpg" alt="Aurora" loading="lazy">
+                    <div class="tile-play"><svg viewBox="0 0 24 24">
+                            <polygon points="6,3 20,12 6,21" />
+                        </svg></div>
+                </div>
+                <div class="tile-info">
+                    <span class="t-sub">Aurora Innovation</span>
+                    <h3>Patient Communication</h3>
+                </div>
+            </button>
+            <button class="work-tile reveal" data-category="brand"
+                data-video="https://www.youtube.com/embed/Tdu-twAu-ec?autoplay=1">
+                <div class="tile-media">
+                    <img src="https://img.youtube.com/vi/Tdu-twAu-ec/hqdefault.jpg" alt="Banking" loading="lazy">
+                    <div class="tile-play"><svg viewBox="0 0 24 24">
+                            <polygon points="6,3 20,12 6,21" />
+                        </svg></div>
+                </div>
+                <div class="tile-info">
+                    <span class="t-sub">Aurora Innovation</span>
+                    <h3>Banking Digitalization</h3>
+                </div>
+            </button>
+
+            <button class="work-tile reveal" data-category="creative"
+                data-video="https://www.youtube.com/embed/wMgp2aNwtII?autoplay=1">
+                <div class="tile-media">
+                    <img src="https://img.youtube.com/vi/wMgp2aNwtII/hqdefault.jpg" alt="Showreel" loading="lazy">
+                    <div class="tile-play"><svg viewBox="0 0 24 24">
+                            <polygon points="6,3 20,12 6,21" />
+                        </svg></div>
+                </div>
+                <div class="tile-info">
+                    <span class="t-sub">Showreel</span>
+                    <h3>Stockholm Noir — 2026</h3>
+                </div>
+            </button>
+            <button class="work-tile reveal" data-category="creative"
+                data-video="https://www.youtube.com/embed/RujBjBENATw?autoplay=1">
+                <div class="tile-media">
+                    <img src="https://img.youtube.com/vi/RujBjBENATw/hqdefault.jpg" alt="O Fortuna" loading="lazy">
+                    <div class="tile-play"><svg viewBox="0 0 24 24">
+                            <polygon points="6,3 20,12 6,21" />
+                        </svg></div>
+                </div>
+                <div class="tile-info">
+                    <span class="t-sub">Stockholm Noir</span>
+                    <h3>"O Fortuna"</h3>
+                </div>
+            </button>
+            <button class="work-tile reveal" data-category="creative"
+                data-video="https://www.youtube.com/embed/aRzD5BSrjW8?autoplay=1">
+                <div class="tile-media">
+                    <img src="https://img.youtube.com/vi/aRzD5BSrjW8/hqdefault.jpg" alt="Omar" loading="lazy">
+                    <div class="tile-play"><svg viewBox="0 0 24 24">
+                            <polygon points="6,3 20,12 6,21" />
+                        </svg></div>
+                </div>
+                <div class="tile-info">
+                    <span class="t-sub">Live Performance</span>
+                    <h3>Omar Rudberg — Wrong</h3>
+                </div>
+            </button>
+            <button class="work-tile reveal" data-category="creative"
+                data-video="https://www.youtube.com/embed/I5yjhrql96w?autoplay=1">
+                <div class="tile-media">
+                    <img src="https://img.youtube.com/vi/I5yjhrql96w/hqdefault.jpg" alt="Anton" loading="lazy">
+                    <div class="tile-play"><svg viewBox="0 0 24 24">
+                            <polygon points="6,3 20,12 6,21" />
+                        </svg></div>
+                </div>
+                <div class="tile-info">
+                    <span class="t-sub">Music Video</span>
+                    <h3>Anton Kröll — Lay Your Head Down</h3>
+                </div>
+            </button>
+            <button class="work-tile reveal" data-category="creative"
+                data-video="https://www.youtube.com/embed/8X52W6v0G3E?autoplay=1">
+                <div class="tile-media">
+                    <img src="https://img.youtube.com/vi/8X52W6v0G3E/hqdefault.jpg" alt="Omar Tour" loading="lazy">
+                    <div class="tile-play"><svg viewBox="0 0 24 24">
+                            <polygon points="6,3 20,12 6,21" />
+                        </svg></div>
+                </div>
+                <div class="tile-info">
+                    <span class="t-sub">Tour Aftermovie</span>
+                    <h3>Omar Rudberg — EU/US 2024</h3>
+                </div>
+            </button>
+            <button class="work-tile reveal" data-category="creative"
+                data-video="https://www.youtube.com/embed/Jyd2LBweQHM?autoplay=1">
+                <div class="tile-media">
+                    <img src="https://img.youtube.com/vi/Jyd2LBweQHM/hqdefault.jpg" alt="Vilhelm" loading="lazy">
+                    <div class="tile-play"><svg viewBox="0 0 24 24">
+                            <polygon points="6,3 20,12 6,21" />
+                        </svg></div>
+                </div>
+                <div class="tile-info">
+                    <span class="t-sub">Music Video</span>
+                    <h3>Vilhelm Buchaus — The Haze</h3>
+                </div>
+            </button>
+
+            <button class="work-tile reveal" data-category="creative"
+                data-video="https://www.youtube.com/embed/KHOgRiizbGA?autoplay=1">
+                <div class="tile-media">
+                    <img src="https://img.youtube.com/vi/KHOgRiizbGA/hqdefault.jpg" alt="Stockholm Noir" loading="lazy">
+                    <div class="tile-play"><svg viewBox="0 0 24 24">
+                            <polygon points="6,3 20,12 6,21" />
+                        </svg></div>
+                </div>
+                <div class="tile-info">
+                    <span class="t-sub">Stockholm Noir</span>
+                    <h3>Erik Erikson Hallen</h3>
+                </div>
+            </button>
+
+            <button class="work-tile reveal" data-category="brand"
+                data-video="https://www.youtube.com/embed/ykh-4kJHD1w?autoplay=1">
+                <div class="tile-media">
+                    <img src="https://img.youtube.com/vi/ykh-4kJHD1w/hqdefault.jpg" alt="Sernbrandt Maskiner"
+                        loading="lazy">
+                    <div class="tile-play"><svg viewBox="0 0 24 24">
+                            <polygon points="6,3 20,12 6,21" />
+                        </svg></div>
+                </div>
+                <div class="tile-info">
+                    <span class="t-sub">Sernbrandt Maskiner</span>
+                    <h3>Robland Z500 X5 Feature</h3>
+                </div>
+            </button>
+
+            <button class="work-tile reveal" data-category="brand"
+                data-video="https://www.youtube.com/embed/8uJfx6Lf3rI?autoplay=1">
+                <div class="tile-media">
+                    <img src="https://img.youtube.com/vi/8uJfx6Lf3rI/hqdefault.jpg"
+                        alt="Nordic Integration Summit Speakers" loading="lazy">
+                    <div class="tile-play"><svg viewBox="0 0 24 24">
+                            <polygon points="6,3 20,12 6,21" />
+                        </svg></div>
+                </div>
+                <div class="tile-info">
+                    <span class="t-sub">Edited by me</span>
+                    <h3>Nordic Integration Summit 2025 | Speakers</h3>
+                </div>
+            </button>
+
+            <button class="work-tile reveal" data-category="brand"
+                data-video="https://www.youtube.com/embed/duvP7Qtvc88?autoplay=1">
+                <div class="tile-media">
+                    <img src="https://img.youtube.com/vi/duvP7Qtvc88/hqdefault.jpg"
+                        alt="Nordic Integration Summit Sponsors" loading="lazy">
+                    <div class="tile-play"><svg viewBox="0 0 24 24">
+                            <polygon points="6,3 20,12 6,21" />
+                        </svg></div>
+                </div>
+                <div class="tile-info">
+                    <span class="t-sub">Edited by me</span>
+                    <h3>Nordic Integration Summit 2025 | Sponsors</h3>
+                </div>
+            </button>
+
+            <button class="work-tile reveal" data-category="brand"
+                data-video="https://www.youtube.com/embed/jwqaXnuRtM8?autoplay=1">
+                <div class="tile-media">
+                    <img src="https://img.youtube.com/vi/jwqaXnuRtM8/hqdefault.jpg"
+                        alt="Nordic Integration Summit Attendees" loading="lazy">
+                    <div class="tile-play"><svg viewBox="0 0 24 24">
+                            <polygon points="6,3 20,12 6,21" />
+                        </svg></div>
+                </div>
+                <div class="tile-info">
+                    <span class="t-sub">Edited by me</span>
+                    <h3>Nordic Integration Summit 2025 | Attendees</h3>
+                </div>
+            </button>
+
+            <button class="work-tile reveal" data-category="brand"
+                data-video="https://www.instagram.com/reel/DBbkKORNZvS/embed">
+                <div class="tile-media"
+                    style="display: flex; align-items: center; justify-content: center; background: radial-gradient(circle at top right, #2a2a2a, #050505);">
+                    <svg style="width: 48px; height: 48px; fill: rgba(255,255,255,0.15);" viewBox="0 0 24 24">
+                        <path
+                            d="M12 2.163c3.204 0 3.584.012 4.85.07 3.252.148 4.771 1.691 4.919 4.919.058 1.265.069 1.645.069 4.849 0 3.205-.012 3.584-.069 4.849-.149 3.225-1.664 4.771-4.919 4.919-1.266.058-1.644.07-4.85.07-3.204 0-3.584-.012-4.849-.07-3.26-.149-4.771-1.699-4.919-4.92-.058-1.265-.07-1.644-.07-4.849 0-3.204.013-3.583.07-4.849.149-3.227 1.664-4.771 4.919-4.919 1.266-.057 1.645-.069 4.849-.069zM12 0C8.741 0 8.333.014 7.053.072 2.695.272.273 2.69.073 7.052.014 8.333 0 8.741 0 12c0 3.259.014 3.668.072 4.948.2 4.358 2.618 6.78 6.98 6.98C8.333 23.986 8.741 24 12 24c3.259 0 3.668-.014 4.948-.072 4.354-.2 6.782-2.618 6.979-6.98.059-1.28.073-1.689.073-4.948 0-3.259-.014-3.667-.072-4.947-.196-4.354-2.617-6.78-6.979-6.98C15.668.014 15.259 0 12 0zm0 5.838a6.162 6.162 0 100 12.324 6.162 6.162 0 000-12.324zM12 16a4 4 0 110-8 4 4 0 010 8zm6.406-11.845a1.44 1.44 0 100 2.881 1.44 1.44 0 000-2.881z" />
+                    </svg>
+                    <div class="tile-play"><svg viewBox="0 0 24 24">
+                            <polygon points="6,3 20,12 6,21" />
+                        </svg></div>
+                </div>
+                <div class="tile-info">
+                    <span class="t-sub">Sweets by Camilla</span>
+                    <h3>Opening at Mall of Scandinavia</h3>
+                </div>
+            </button>
+
+            <button class="work-tile reveal" data-category="brand"
+                data-video="https://www.instagram.com/reel/DFdHMeXh65D/embed">
+                <div class="tile-media"
+                    style="display: flex; align-items: center; justify-content: center; background: radial-gradient(circle at top right, #2a2a2a, #050505);">
+                    <svg style="width: 48px; height: 48px; fill: rgba(255,255,255,0.15);" viewBox="0 0 24 24">
+                        <path
+                            d="M12 2.163c3.204 0 3.584.012 4.85.07 3.252.148 4.771 1.691 4.919 4.919.058 1.265.069 1.645.069 4.849 0 3.205-.012 3.584-.069 4.849-.149 3.225-1.664 4.771-4.919 4.919-1.266.058-1.644.07-4.85.07-3.204 0-3.584-.012-4.849-.07-3.26-.149-4.771-1.699-4.919-4.92-.058-1.265-.07-1.644-.07-4.849 0-3.204.013-3.583.07-4.849.149-3.227 1.664-4.771 4.919-4.919 1.266-.057 1.645-.069 4.849-.069zM12 0C8.741 0 8.333.014 7.053.072 2.695.272.273 2.69.073 7.052.014 8.333 0 8.741 0 12c0 3.259.014 3.668.072 4.948.2 4.358 2.618 6.78 6.98 6.98C8.333 23.986 8.741 24 12 24c3.259 0 3.668-.014 4.948-.072 4.354-.2 6.782-2.618 6.979-6.98.059-1.28.073-1.689.073-4.948 0-3.259-.014-3.667-.072-4.947-.196-4.354-2.617-6.78-6.979-6.98C15.668.014 15.259 0 12 0zm0 5.838a6.162 6.162 0 100 12.324 6.162 6.162 0 000-12.324zM12 16a4 4 0 110-8 4 4 0 010 8zm6.406-11.845a1.44 1.44 0 100 2.881 1.44 1.44 0 000-2.881z" />
+                    </svg>
+                    <div class="tile-play"><svg viewBox="0 0 24 24">
+                            <polygon points="6,3 20,12 6,21" />
+                        </svg></div>
+                </div>
+                <div class="tile-info">
+                    <span class="t-sub">Roschier</span>
+                    <h3>View from the Top (1)</h3>
+                </div>
+            </button>
+
+            <button class="work-tile reveal" data-category="brand"
+                data-video="https://www.instagram.com/reel/DFIXpo_vDMH/embed">
+                <div class="tile-media"
+                    style="display: flex; align-items: center; justify-content: center; background: radial-gradient(circle at top right, #2a2a2a, #050505);">
+                    <svg style="width: 48px; height: 48px; fill: rgba(255,255,255,0.15);" viewBox="0 0 24 24">
+                        <path
+                            d="M12 2.163c3.204 0 3.584.012 4.85.07 3.252.148 4.771 1.691 4.919 4.919.058 1.265.069 1.645.069 4.849 0 3.205-.012 3.584-.069 4.849-.149 3.225-1.664 4.771-4.919 4.919-1.266.058-1.644.07-4.85.07-3.204 0-3.584-.012-4.849-.07-3.26-.149-4.771-1.699-4.919-4.92-.058-1.265-.07-1.644-.07-4.849 0-3.204.013-3.583.07-4.849.149-3.227 1.664-4.771 4.919-4.919 1.266-.057 1.645-.069 4.849-.069zM12 0C8.741 0 8.333.014 7.053.072 2.695.272.273 2.69.073 7.052.014 8.333 0 8.741 0 12c0 3.259.014 3.668.072 4.948.2 4.358 2.618 6.78 6.98 6.98C8.333 23.986 8.741 24 12 24c3.259 0 3.668-.014 4.948-.072 4.354-.2 6.782-2.618 6.979-6.98.059-1.28.073-1.689.073-4.948 0-3.259-.014-3.667-.072-4.947-.196-4.354-2.617-6.78-6.979-6.98C15.668.014 15.259 0 12 0zm0 5.838a6.162 6.162 0 100 12.324 6.162 6.162 0 000-12.324zM12 16a4 4 0 110-8 4 4 0 010 8zm6.406-11.845a1.44 1.44 0 100 2.881 1.44 1.44 0 000-2.881z" />
+                    </svg>
+                    <div class="tile-play"><svg viewBox="0 0 24 24">
+                            <polygon points="6,3 20,12 6,21" />
+                        </svg></div>
+                </div>
+                <div class="tile-info">
+                    <span class="t-sub">Roschier</span>
+                    <h3>View from the Top (2)</h3>
+                </div>
+            </button>
+        </div>
+
+    </section>
+
+    <!-- MANIFESTO / EXPERIENCE -->
+    <section class="manifesto reveal" id="about">
+        <h2>Work on Set</h2>
+    </section>
+
+    <!-- EXPERIENCE LIST -->
+    <section class="credits-section reveal">
+        <div class="ticker-wrap">
+            <div class="credits-track">
+                <!-- Group 1 -->
+                <div class="credits-content">
+                    <div class="credit-item"><span class="credit-title">Permafrost</span><span
+                            class="credit-role">Assistant Set Manager</span></div>
+                    <span class="credit-sep">✦</span>
+                    <div class="credit-item"><span class="credit-title">Von Fersen</span><span
+                            class="credit-role">Location Assistant</span></div>
+                    <span class="credit-sep">✦</span>
+                    <div class="credit-item"><span class="credit-title">Veronika</span><span
+                            class="credit-role">Location Assistant</span></div>
+                    <span class="credit-sep">✦</span>
+                    <div class="credit-item"><span class="credit-title">Vi kommer i fred</span><span
+                            class="credit-role">Location Assistant (SWE)</span></div>
+                    <span class="credit-sep">✦</span>
+                    <div class="credit-item"><span class="credit-title">Skiftet</span><span class="credit-role">Location
+                            Assistant</span></div>
+                    <span class="credit-sep">✦</span>
+                    <div class="credit-item"><span class="credit-title">Helikopterrånet</span><span
+                            class="credit-role">Location Assistant</span></div>
+                    <span class="credit-sep">✦</span>
+                    <div class="credit-item"><span class="credit-title">Young Royals</span><span
+                            class="credit-role">Lighting Assistant</span></div>
+                    <span class="credit-sep">✦</span>
+                </div>
+                <!-- Group 2 -->
+                <div class="credits-content">
+                    <div class="credit-item"><span class="credit-title">Permafrost</span><span
+                            class="credit-role">Assistant Set Manager</span></div>
+                    <span class="credit-sep">✦</span>
+                    <div class="credit-item"><span class="credit-title">Von Fersen</span><span
+                            class="credit-role">Location Assistant</span></div>
+                    <span class="credit-sep">✦</span>
+                    <div class="credit-item"><span class="credit-title">Veronika</span><span
+                            class="credit-role">Location Assistant</span></div>
+                    <span class="credit-sep">✦</span>
+                    <div class="credit-item"><span class="credit-title">Vi kommer i fred</span><span
+                            class="credit-role">Location Assistant (SWE)</span></div>
+                    <span class="credit-sep">✦</span>
+                    <div class="credit-item"><span class="credit-title">Skiftet</span><span class="credit-role">Location
+                            Assistant</span></div>
+                    <span class="credit-sep">✦</span>
+                    <div class="credit-item"><span class="credit-title">Helikopterrånet</span><span
+                            class="credit-role">Location Assistant</span></div>
+                    <span class="credit-sep">✦</span>
+                    <div class="credit-item"><span class="credit-title">Young Royals</span><span
+                            class="credit-role">Lighting Assistant</span></div>
+                    <span class="credit-sep">✦</span>
+                </div>
+                <!-- Group 3 -->
+                <div class="credits-content">
+                    <div class="credit-item"><span class="credit-title">Permafrost</span><span
+                            class="credit-role">Assistant Set Manager</span></div>
+                    <span class="credit-sep">✦</span>
+                    <div class="credit-item"><span class="credit-title">Von Fersen</span><span
+                            class="credit-role">Location Assistant</span></div>
+                    <span class="credit-sep">✦</span>
+                    <div class="credit-item"><span class="credit-title">Veronika</span><span
+                            class="credit-role">Location Assistant</span></div>
+                    <span class="credit-sep">✦</span>
+                    <div class="credit-item"><span class="credit-title">Vi kommer i fred</span><span
+                            class="credit-role">Location Assistant (SWE)</span></div>
+                    <span class="credit-sep">✦</span>
+                    <div class="credit-item"><span class="credit-title">Skiftet</span><span class="credit-role">Location
+                            Assistant</span></div>
+                    <span class="credit-sep">✦</span>
+                    <div class="credit-item"><span class="credit-title">Helikopterrånet</span><span
+                            class="credit-role">Location Assistant</span></div>
+                    <span class="credit-sep">✦</span>
+                    <div class="credit-item"><span class="credit-title">Young Royals</span><span
+                            class="credit-role">Lighting Assistant</span></div>
+                    <span class="credit-sep">✦</span>
+                </div>
+            </div>
+        </div>
+        <div class="imdb-btn-wrap">
+            <a href="https://www.imdb.com/name/nm15967926/" target="_blank" class="imdb-btn">
+                View Full Filmography on IMDb ↗
+            </a>
+        </div>
+    </section>
+
+    <!-- CONTACT -->
+    <section class="contact-section reveal" id="contact">
+        <span class="t-sub contact-sub">Start a Dialogue</span>
+        <div class="contact-email" onclick="copyEmail()">
+            <span id="emailText">cgm.ingels@gmail.com</span>
+            <span class="contact-arrow">↗</span>
+        </div>
+    </section>
+
+    <!-- FOOTER -->
+    <footer style="flex-direction: column; gap: 2rem; align-items: center; justify-content: center;">
+        <div class="footer-social" style="flex-wrap: wrap; justify-content: center; gap: 2rem;">
+            <a href="https://www.imdb.com/name/nm15967926/" target="_blank">IMDb</a>
+            <a href="https://www.youtube.com/@christianingels4309" target="_blank">YouTube</a>
+            <a href="https://www.instagram.com/christian.ingels/" target="_blank">Instagram</a>
+            <a href="https://www.linkedin.com/in/christian-ingels/" target="_blank">LinkedIn</a>
+            <a href="https://youtube.com/playlist?list=PLptsCz9Ttcxs1_I_d9I2YdgzM8RHRxH28&si=kZXOiLWU7Npf82J1"
+                target="_blank">Client Work Playlist</a>
+            <a href="https://youtube.com/playlist?list=PLptsCz9TtcxvxIMShvGgSCDTjXGVhFKPd&si=2g4xAty_6Nsdj2dZ"
+                target="_blank">Music Videos Playlist</a>
+        </div>
+        <p class="t-sub">&copy; 2026 CI ARTS</p>
+    </footer>
+
+    <!-- VIDEO MODAL -->
+    <div class="modal-overlay" id="videoModal">
+        <button class="modal-close" id="modalClose">Close</button>
+        <div class="modal-content">
+            <div id="plyrContainer" style="display: none; width: 100%; height: 100%;">
+                <div class="plyr__video-embed" id="player">
+                    <iframe src="" allowfullscreen allowtransparency></iframe>
+                </div>
+            </div>
+            <iframe id="videoFrame" src="" style="display: none; width: 100%; height: 100%; border: none;"
+                allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share"
+                allowfullscreen></iframe>
+        </div>
+    </div>
+
+    <script>
+        /* ===== MOBILE MENU ===== */
+        const menuToggle = document.getElementById('menuToggle');
+        const mobileMenu = document.getElementById('mobileMenu');
+
+        menuToggle.addEventListener('click', () => {
+            menuToggle.classList.toggle('active');
+            mobileMenu.classList.toggle('active');
+            document.body.style.overflow = mobileMenu.classList.contains('active') ? 'hidden' : '';
+        });
+
+        document.querySelectorAll('.mobile-link').forEach(link => {
+            link.addEventListener('click', () => {
+                menuToggle.classList.remove('active');
+                mobileMenu.classList.remove('active');
+                document.body.style.overflow = '';
+            });
+        });
+
+        /* ===== WORK FILTER ===== */
+        const filterBtns = document.querySelectorAll('.filter-btn');
+        const workTiles = document.querySelectorAll('.work-tile');
+
+        filterBtns.forEach(btn => {
+            btn.addEventListener('click', () => {
+                filterBtns.forEach(b => b.classList.remove('active'));
+                btn.classList.add('active');
+
+                const filter = btn.dataset.filter;
+                workTiles.forEach(tile => {
+                    if (filter === 'all' || tile.dataset.category === filter) {
+                        tile.style.display = 'flex';
+                        tile.style.animation = 'none';
+                        tile.offsetHeight; // reflow
+                        tile.style.animation = 'fadeIn 0.6s var(--ease-heavy) forwards';
+                    } else {
+                        tile.style.display = 'none';
+                    }
+                });
+            });
+        });
+
+        /* ===== SCROLL REVEAL ===== */
+        const revealObserver = new IntersectionObserver((entries) => {
+            entries.forEach(entry => {
+                if (entry.isIntersecting) entry.target.classList.add('visible');
+            });
+        }, { threshold: 0.1 });
+        document.querySelectorAll('.reveal').forEach(el => revealObserver.observe(el));
+
+        /* ===== VIDEO MODAL ===== */
+        const tiles = document.querySelectorAll('.work-tile');
+
+        const modal = document.getElementById('videoModal');
+        const frame = document.getElementById('videoFrame');
+        const plyrContainer = document.getElementById('plyrContainer');
+        const closeBtn = document.getElementById('modalClose');
+
+        let plyrPlayer = null;
+
+        tiles.forEach(tile => {
+            tile.addEventListener('click', (e) => {
+                e.preventDefault();
+                const url = tile.dataset.video;
+                const modalContent = modal.querySelector('.modal-content');
+                if (url) {
+                    if (url.includes('instagram.com')) {
+                        plyrContainer.style.display = 'none';
+                        frame.style.display = 'block';
+                        modalContent.style.aspectRatio = 'unset';
+                        modalContent.style.height = '85vh';
+                        modalContent.style.maxWidth = '500px';
+                        frame.src = url;
+                    } else {
+                        plyrContainer.style.display = 'block';
+                        frame.style.display = 'none';
+                        modalContent.style.aspectRatio = '16/9';
+                        modalContent.style.height = 'auto';
+                        modalContent.style.maxWidth = '1600px';
+
+                        if (url.includes('youtube.com')) {
+                            const videoId = url.split('/embed/')[1].split('?')[0];
+                            if (plyrPlayer) {
+                                plyrPlayer.destroy();
+                            }
+                            plyrContainer.innerHTML = `<div id="player" data-plyr-provider="youtube" data-plyr-embed-id="${videoId}"></div>`;
+                            plyrPlayer = new Plyr('#player', {
+                                autoplay: true,
+                                controls: ['play-large', 'play', 'progress', 'current-time', 'mute', 'volume', 'fullscreen'],
+                                youtube: { noCookie: false, rel: 0, showinfo: 0, iv_load_policy: 3, modestbranding: 1 }
+                            });
+                        }
+                    }
+                    modal.classList.add('active');
+                    document.body.style.overflow = 'hidden';
+                }
+            });
+        });
+
+        function closeModal() {
+            modal.classList.remove('active');
+            document.body.style.overflow = '';
+            setTimeout(() => {
+                if (plyrPlayer) {
+                    plyrPlayer.destroy();
+                    plyrPlayer = null;
+                    plyrContainer.innerHTML = '';
+                }
+                frame.src = '';
+            }, 600); // Wait for modal animation to finish
+        }
+
+        closeBtn.addEventListener('click', closeModal);
+        modal.addEventListener('click', e => { if (e.target === modal) closeModal(); });
+        document.addEventListener('keydown', e => { if (e.key === 'Escape') closeModal(); });
+
+        // Initialize default filter
+        window.addEventListener('DOMContentLoaded', () => {
+            const defaultFilter = document.querySelector('.filter-btn[data-filter="all"]');
+            if (defaultFilter) defaultFilter.click();
+        });
+
+        /* ===== CUSTOM CURSOR LOGIC ===== */
+        if (window.matchMedia("(pointer: fine)").matches) {
+            const cursor = document.getElementById('customCursor');
+            let mouseX = 0, mouseY = 0;
+            let cursorX = 0, cursorY = 0;
+
+            document.addEventListener('mousemove', e => {
+                mouseX = e.clientX;
+                mouseY = e.clientY;
+            });
+
+            function renderCursor() {
+                cursorX += (mouseX - cursorX) * 0.15;
+                cursorY += (mouseY - cursorY) * 0.15;
+                cursor.style.transform = `translate(${cursorX}px, ${cursorY}px) translate(-50%, -50%)`;
+                requestAnimationFrame(renderCursor);
+            }
+            requestAnimationFrame(renderCursor);
+
+            const cursorText = cursor.querySelector('.cursor-text');
+            document.querySelectorAll('.work-tile').forEach(tile => {
+                tile.addEventListener('mouseenter', () => {
+                    cursorText.innerText = 'PLAY';
+                    cursor.classList.add('play-mode');
+                });
+                tile.addEventListener('mouseleave', () => cursor.classList.remove('play-mode'));
+            });
+
+            const contactEmail = document.querySelector('.contact-email');
+            if (contactEmail) {
+                contactEmail.addEventListener('mouseenter', () => {
+                    cursorText.innerText = 'COPY';
+                    cursor.classList.add('play-mode');
+                });
+                contactEmail.addEventListener('mouseleave', () => cursor.classList.remove('play-mode'));
+            }
+
+            // Optional: Hide cursor when leaving window
+            document.addEventListener('mouseleave', () => cursor.style.opacity = '0');
+            document.addEventListener('mouseenter', () => cursor.style.opacity = '1');
+        }
+
+        /* ===== COPY EMAIL LOGIC ===== */
+        function copyEmail() {
+            const emailText = document.getElementById('emailText');
+            navigator.clipboard.writeText('cgm.ingels@gmail.com').then(() => {
+                emailText.style.opacity = 0;
+                setTimeout(() => {
+                    emailText.innerText = 'Copied to Clipboard';
+                    emailText.style.fontStyle = 'italic';
+                    emailText.style.opacity = 1;
+
+                    setTimeout(() => {
+                        emailText.style.opacity = 0;
+                        setTimeout(() => {
+                            emailText.innerText = 'cgm.ingels@gmail.com';
+                            emailText.style.fontStyle = 'normal';
+                            emailText.style.opacity = 1;
+                        }, 400);
+                    }, 2000);
+                }, 400);
+            }).catch(err => {
+                window.location.href = 'mailto:cgm.ingels@gmail.com';
+            });
+        }
+
+        /* ===== HERO VIDEO YT API ===== */
+        let heroPlayer;
+        function loadHeroVideo() {
+            heroPlayer = new YT.Player('heroVideoPlayer', {
+                playerVars: {
+                    listType: 'playlist',
+                    list: 'PLptsCz9TtcxvxIMShvGgSCDTjXGVhFKPd',
+                    autoplay: 1, controls: 0, mute: 1, loop: 1, playsinline: 1, rel: 0, showinfo: 0, modestbranding: 1
+                },
+                events: {
+                    'onReady': function (event) { event.target.mute(); event.target.playVideo(); },
+                    'onStateChange': function (event) {
+                        if (event.data === YT.PlayerState.PLAYING) {
+                            setTimeout(() => {
+                                document.getElementById('heroVideoPlayer').classList.add('is-playing');
+                                const fallback = document.getElementById('heroFallback');
+                                if (fallback) fallback.classList.add('hidden');
+                            }, 4000);
+                        }
+                    }
+                }
+            });
+        }
+
+        if (window.YT && window.YT.Player) {
+            loadHeroVideo();
+        } else {
+            const tag = document.createElement('script');
+            tag.src = "https://www.youtube.com/iframe_api";
+            const firstScriptTag = document.getElementsByTagName('script')[0];
+            firstScriptTag.parentNode.insertBefore(tag, firstScriptTag);
+
+            const oldReady = window.onYouTubeIframeAPIReady;
+            window.onYouTubeIframeAPIReady = function () {
+                if (oldReady) oldReady();
+                loadHeroVideo();
+            };
+        }
+    </script>
+    <script src="https://cdn.plyr.io/3.7.8/plyr.js"></script>
+</body>
+
+</html>
